@@ -240,27 +240,21 @@ If you use this code or ideas from our work, please cite:
 
 
 
-```bibtex
+> @inproceedings{acevedo25\_interspeech,
 
-@inproceedings{acevedo25\_interspeech,
+>   title     = {{Domain Adaptation Method and Modality Gap Impact in Audio-Text Models for Prototypical Sound Classification}},
 
-&#x20; title     = {{Domain Adaptation Method and Modality Gap Impact in Audio-Text Models for Prototypical Sound Classification}},
+>   author    = {Emiliano Acevedo and Martín Rocamora and Magdalena Fuentes},
 
-&#x20; author    = {Emiliano Acevedo and Martín Rocamora and Magdalena Fuentes},
+>   year      = {2025},
 
-&#x20; year      = {2025},
+>   booktitle = {{Interspeech 2025}},
 
-&#x20; booktitle = {{Interspeech 2025}},
+>   pages     = {1328--1332},
 
-&#x20; pages     = {1328--1332},
+>   doi       = {10.21437/Interspeech.2025-886},
 
-&#x20; doi       = {10.21437/Interspeech.2025-886},
-
-}
-
-```
-
-
+> }
 
 \---
 
