@@ -55,10 +55,12 @@ Download from: https://github.com/karolpiczak/ESC-50
 
 ### Place data in the following structure
 
+```text
 data/input/esc50/
 ├── audio/          # All .wav files
 └── meta/
     └── esc50.csv   # Metadata file
+```
 
 ---
 
