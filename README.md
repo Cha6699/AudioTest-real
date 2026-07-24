@@ -30,3 +30,13 @@ git clone git@github.com:eacevedo1/AudioText-ContextDomainAdaptation.git
 
 cd AudioText-ContextDomainAdaptation
 
+
+
+Create environment
+
+conda create --name atm-domain-adapt python=3.9
+
+conda activate atm-domain-adapt
+
+pip install -r requirements.txt
+
