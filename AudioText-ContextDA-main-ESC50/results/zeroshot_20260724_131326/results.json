@@ -1,0 +1,17 @@
+{
+  "method": "Zero-shot",
+  "timestamp": "20260724_131326",
+  "fold_accuracies": [
+    0.8475,
+    0.755,
+    0.7975,
+    0.7975,
+    0.865
+  ],
+  "mean_accuracy": 0.8125,
+  "std_accuracy": 0.03933827652554189,
+  "num_samples": 2000,
+  "embedding_dim": 512,
+  "num_classes": 50,
+  "note": "Using class average embeddings as prototypes (approximate zero-shot)"
+}

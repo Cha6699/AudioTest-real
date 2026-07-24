@@ -1,0 +1,18 @@
+{
+  "method": "SVM (Supervised)",
+  "timestamp": "20260724_131338",
+  "fold_accuracies": [
+    0.9,
+    0.875,
+    0.8875,
+    0.905,
+    0.9175
+  ],
+  "mean_accuracy": 0.8969999999999999,
+  "std_accuracy": 0.014611639196202463,
+  "num_samples": 2000,
+  "embedding_dim": 512,
+  "num_classes": 50,
+  "svm_kernel": "rbf",
+  "svm_C": 1.0
+}
