@@ -114,7 +114,7 @@ Download from: https://github.com/karolpiczak/ESC-50
 
 
 
-```
+<pre>
 
 data/input/esc50/
 
@@ -124,9 +124,7 @@ data/input/esc50/
 
 &#x20;   └── esc50.csv   # Metadata file
 
-```
-
-
+</pre>
 
 \---
 
