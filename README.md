@@ -1,29 +1,28 @@
-# AudioText-ContextDA: 音频文本领域适配实验
+# AudioText-ContextDA: Audio-Text Domain Adaptation Experiments
 
-本项目基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，包含两组独立的音频分类实验。
+This project is built upon the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository and contains two independent audio classification experiments.
 
-> 原始项目：INTERSPEECH 2025 论文 "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification" 的官方代码。
-
----
-
-## 项目概览
-
-| 子项目 | 数据集 | 测试方法 | 特殊设置 | 评估指标 |
-|--------|--------|----------|----------|----------|
-| [ESC-50 实验](./AudioText-ContextDA-main-ESC50) | ESC-50 (2000个样本, 50类) | Zero-shot, KNN, SVM | 无 | Accuracy |
-| [真实声音实验](./AudioText-ContextDA-main-REAL) | 真实录制声音 (28个样本, 4类) | Zero-shot, 监督学习 (SVM/MLP/RF), 文本领域适配 | 温度背景 (工地) 0.3/0.5/0.7 | mAP |
+> Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 
 ---
 
-## 环境配置
+## Project Overview
 
-两个子项目共用同一个环境：
+| Subproject | Dataset | Methods | Special Settings | Metric |
+|------------|---------|---------|------------------|--------|
+| [ESC-50 Experiment](./AudioText-ContextDA-main-ESC50) | ESC-50 (2,000 samples, 50 classes) | Zero-shot, KNN, SVM | None | Accuracy |
+| [Real Sound Experiment](./AudioText-ContextDA-main-REAL) | Real-world sounds (28 samples, 4 classes) | Zero-shot, Supervised Learning (SVM/MLP/RF), Text-based Domain Adaptation | Temperature (construction site) 0.3/0.5/0.7 | mAP |
+
+---
+
+## Environment Setup
+
+Both subprojects share the same environment:
 
 ```bash
 conda create --name atm-domain-adapt python=3.9
 conda activate atm-domain-adapt
 pip install -r requirements.txt
-```
 
 ### Extra dependencies (for HuggingFace version)
 
@@ -33,12 +32,12 @@ pip install transformers
 
 ---
 
-## 目录结构
+## Directory Structure
 
 ```
 AudioTest-real/
-├── README.md                                    # 总 README (本文件)
-├── AudioText-ContextDA-main-ESC50/              # ESC-50 实验
+├── README.md                                    # Root README (this file)
+├── AudioText-ContextDA-main-ESC50/              # ESC-50 Experiment
 │   ├── README.md
 │   ├── process_esc50_hf.py
 │   ├── test_knn.py
@@ -46,7 +45,7 @@ AudioTest-real/
 │   ├── test_svm.py
 │   ├── class_labels_esc50.txt
 │   └── results/
-└── AudioText-ContextDA-main-REAL/               # 真实声音实验
+└── AudioText-ContextDA-main-REAL/               # Real Sound Experiment
     ├── README.md
     ├── test_zero_sample.py
     ├── test_supervised_learning.py
@@ -62,9 +61,9 @@ AudioTest-real/
 
 ---
 
-## 结果汇总
+## Results Summary
 
-### ESC-50 实验结果 (Accuracy)
+### ESC-50 Experiment Results (Accuracy)
 
 | Fold | Zero-shot | KNN | SVM |
 |------|-----------|-----|-----|
@@ -76,45 +75,45 @@ AudioTest-real/
 | **Mean** | **81.25%** | **87.90%** | **89.70%** |
 | **Std** | ±3.91% | ±2.17% | ±1.60% |
 
-### 真实声音实验结果
+### Real Sound Experiment Results
 
-#### Zero-shot (零样本)
+#### Zero-shot 
 
-| 指标 | 值 |
+| Metric | Value |
 |------|-----|
-| 测试样本数 | 28 |
-| 类别数 | 4 |
+| Test Samples | 28 |
+| Number of Classes | 4 |
 | **mAP** | **0.8048** |
-| 单标签准确率 | 32.14% |
+| Single-label Accuracy | 32.14% |
 
-#### 监督学习 (分类器对比)
+#### Supervised Learning (Classifier Comparison)
 
-| 分类器 | mAP | 准确率 |
+| Classifier | mAP | Accuracy |
 |--------|-----|--------|
 | SVM | 0.9086 | 53.57% |
 | RandomForest | 0.9407 | 89.29% |
 | **MLP** | **0.9547** | **89.29%** |
 
-> **最佳分类器：MLP (mAP = 0.9547)**
+> **Best Classifier: MLP (mAP = 0.9547)**
 
-#### 文本领域适配 (工地背景)
+#### Text-based Domain Adaptation (Construction Site Background)
 
-| 温度参数 | mAP | 单标签准确率 |
+| Temperature | mAP | Single-label Accuracy |
 |----------|-----|--------------|
 | 0.3 | **0.8080** | 25.00% |
 | 0.5 | 0.8053 | 67.86% |
 | 0.7 | 0.7852 | 28.57% |
 
-> **最佳温度：0.3 (mAP = 0.8080)**
+> **Best Temperature: 0.3(mAP = 0.8080)**
 
 ---
 
-## 关键发现
+## Key Findings
 
-1. **监督学习效果最好**: MLP 达到 **95.47% mAP**，远超 Zero-shot (80.48%)
-2. **RandomForest 表现优异**: 89.29% 准确率，接近 MLP
-3. **文本领域适配**: 温度参数在 0.3 时效果最佳 (80.80% mAP)
-4. **温度影响**: 温度从 0.3 升至 0.7，mAP 从 80.80% 降至 78.52%
+1. **Supervised learning achieves the best performance**:MLP reaches 95.47% mAP**,significantly outperforming Zero-shot (80.48%)
+2. **RandomForest performs strongly**:  94.07% mAP with 89.29% accuracy, comparable to MLP
+3. **Text-based domain adaptation**: Optimal performance at temperature 0.3 (80.80% mAP)
+4. **Temperature impact**: mAP drops from 80.80% to 78.52% as temperature increases from 0.3 to 0.7
 
 ---
 
