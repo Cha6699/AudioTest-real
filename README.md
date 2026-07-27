@@ -1,21 +1,23 @@
-# AudioText-ContextDA with ESC-50 Support
+# AudioText-ContextDA: 音频文本领域适配实验
 
-基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，添加了 ESC-50 数据集的支持。
+本项目基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，包含两组独立的音频分类实验。
 
 > 原始项目：INTERSPEECH 2025 论文 "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification" 的官方代码。
 
 ---
 
-## Setup
+## 项目概览
 
-### Clone repository
+| 子项目 | 数据集 | 测试方法 | 特殊设置 | 评估指标 |
+|--------|--------|----------|----------|----------|
+| [ESC-50 实验](./AudioText-ContextDA-main-ESC50) | ESC-50 (2000个样本, 50类) | Zero-shot, KNN, SVM | 无 | Accuracy |
+| [真实声音实验](./AudioText-ContextDA-main-REAL) | 真实录制声音 (28个样本, 4类) | Zero-shot, 监督学习 (SVM/MLP/RF), 文本领域适配 | 温度背景 (工地) 0.3/0.5/0.7 | mAP |
 
-```bash
-git clone git@github.com:eacevedo1/AudioText-ContextDomainAdaptation.git
-cd AudioText-ContextDomainAdaptation
-```
+---
 
-### Create environment
+## 环境配置
+
+两个子项目共用同一个环境：
 
 ```bash
 conda create --name atm-domain-adapt python=3.9
@@ -31,80 +33,38 @@ pip install transformers
 
 ---
 
-## Download the pretrained models
+## 目录结构
 
-### Create the directory
-
-```bash
-mkdir -p models/LAION-CLAP
 ```
-
-### Download the model
-
-```bash
-wget -P models/LAION-CLAP https://huggingface.co/lukewys/laion_clap/resolve/main/630k-audioset-fusion-best.pt
-```
-
----
-
-## Dataset Preparation
-
-### Download ESC-50 dataset
-
-Download from: https://github.com/karolpiczak/ESC-50
-
-### Place data in the following structure
-
-```text
-data/input/esc50/
-├── audio/          # All .wav files
-└── meta/
-    └── esc50.csv   # Metadata file
+AudioTest-real/
+├── README.md                                    # 总 README (本文件)
+├── AudioText-ContextDA-main-ESC50/              # ESC-50 实验
+│   ├── README.md
+│   ├── process_esc50_hf.py
+│   ├── test_knn.py
+│   ├── test_zeroshot.py
+│   ├── test_svm.py
+│   ├── class_labels_esc50.txt
+│   └── results/
+└── AudioText-ContextDA-main-REAL/               # 真实声音实验
+    ├── README.md
+    ├── test_zero_sample.py
+    ├── test_supervised_learning.py
+    ├── test_with_domain_adaptation_text.py
+    └── result/
+        ├── zero_sample/
+        ├── classifier_comparison/
+        └── test_with_domain_adaptation_text/
+            ├── temperature_0.3/
+            ├── temperature_0.5/
+            └── temperature_0.7/
 ```
 
 ---
 
-## Usage
+## 结果汇总
 
-### 1. Extract ESC-50 audio embeddings
-
-```bash
-python process_esc50_hf.py
-```
-
-> The script uses HuggingFace `laion/clap-htsat-fused` model, which will be downloaded automatically.
-
-### 2. Run classification tests
-
-#### KNN classification
-
-```bash
-python test_knn.py
-```
-
-#### Zero-shot classification
-
-```bash
-python test_zeroshot.py
-```
-
-#### SVM supervised classification
-
-```bash
-python test_svm.py
-```
-
-### 3. Test a single audio file
-
-```bash
-python predict_single_audio.py
-```
-
----
-
-## Results
-
-### ESC-50 Classification Results (5-fold Cross Validation)
+### ESC-50 实验结果 (Accuracy)
 
 | Fold | Zero-shot | KNN | SVM |
 |------|-----------|-----|-----|
@@ -116,63 +76,45 @@ python predict_single_audio.py
 | **Mean** | **81.25%** | **87.90%** | **89.70%** |
 | **Std** | ±3.91% | ±2.17% | ±1.60% |
 
-### Method Comparison
+### 真实声音实验结果
 
-| Method | Type | Mean Accuracy | Std |
-|--------|------|---------------|-----|
-| Zero-shot | 零样本学习 | 81.25% | ±3.91% |
-| KNN | 监督学习 (余弦距离) | 87.90% | ±2.17% |
-| SVM | 监督学习 (RBF核) | **89.70%** | **±1.60%** |
+#### Zero-shot (零样本)
 
-### Key Observations
+| 指标 | 值 |
+|------|-----|
+| 测试样本数 | 28 |
+| 类别数 | 4 |
+| **mAP** | **0.8048** |
+| 单标签准确率 | 32.14% |
 
-- **SVM** achieves the best performance with **89.70%** accuracy
-- **Zero-shot** reaches **81.25%** without any training data
-- **SVM** shows the most stable performance across all folds (±1.60%)
+#### 监督学习 (分类器对比)
 
-### Results Location
+| 分类器 | mAP | 准确率 |
+|--------|-----|--------|
+| SVM | 0.9086 | 53.57% |
+| RandomForest | 0.9407 | 89.29% |
+| **MLP** | **0.9547** | **89.29%** |
 
-All results are saved in the `results/` directory:
-- `knn_YYYYMMDD_HHMMSS/`
-- `zeroshot_YYYYMMDD_HHMMSS/`
-- `svm_YYYYMMDD_HHMMSS/`
+> **最佳分类器：MLP (mAP = 0.9547)**
+
+#### 文本领域适配 (工地背景)
+
+| 温度参数 | mAP | 单标签准确率 |
+|----------|-----|--------------|
+| 0.3 | **0.8080** | 25.00% |
+| 0.5 | 0.8053 | 67.86% |
+| 0.7 | 0.7852 | 28.57% |
+
+> **最佳温度：0.3 (mAP = 0.8080)**
 
 ---
 
-## Project Structure
+## 关键发现
 
-```
-AudioText-ContextDA/
-├── scripts/                    # Original project scripts
-│   ├── download_dataset.py
-│   ├── extract_embeddings.py
-│   ├── inference_classification.py
-│   ├── sound_classification.py
-│   └── soundscape_augmentations.py
-├── src/                        # Original project source
-│   ├── domain_adaptation_utils.py
-│   ├── get_datasets.py
-│   ├── get_embedding.py
-│   ├── get_models.py
-│   └── ...
-├── process_esc50_hf.py         # ESC-50 embedding extraction
-├── predict_single_audio.py     # Single audio inference
-├── test_knn.py                 # KNN classification
-├── test_zeroshot.py            # Zero-shot classification
-├── test_svm.py                 # SVM classification
-├── class_labels_esc50.txt      # ESC-50 class labels
-├── results/                    # Test results
-├── data/                       # Dataset directory
-│   └── input/
-│       └── esc50/
-│           ├── audio/          # ESC-50 audio files
-│           └── meta/
-│               └── esc50.csv
-├── models/                     # Pretrained models
-│   └── LAION-CLAP/
-│       └── 630k-audioset-fusion-best.pt
-└── README.md
-```
+1. **监督学习效果最好**: MLP 达到 **95.47% mAP**，远超 Zero-shot (80.48%)
+2. **RandomForest 表现优异**: 89.29% 准确率，接近 MLP
+3. **文本领域适配**: 温度参数在 0.3 时效果最佳 (80.80% mAP)
+4. **温度影响**: 温度从 0.3 升至 0.7，mAP 从 80.80% 降至 78.52%
 
 ---
 
