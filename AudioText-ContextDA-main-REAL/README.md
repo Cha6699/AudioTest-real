@@ -129,7 +129,7 @@ python test_with_domain_adaptation_text.py
 
 ### Text-based Domain Adaptation Results
 
-Background: **construction_site **
+Background: construction_site 
 
 | Temperature | mAP | Single-label Accuracy |
 |----------|-----|--------------|
