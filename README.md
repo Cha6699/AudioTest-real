@@ -1,6 +1,6 @@
 # AudioText-ContextDA: Audio-Text Domain Adaptation Experiments
 
-This project is built upon the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository and contains two independent audio classification experiments.
+This project is built upon the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDA) repository and contains two independent audio classification experiments.
 
 > Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 

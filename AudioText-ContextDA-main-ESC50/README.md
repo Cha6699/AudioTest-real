@@ -1,6 +1,6 @@
 # AudioText-ContextDA with ESC-50 Support
 
-This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository with support for the ESC-50 dataset.
+This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDA) repository with support for the ESC-50 dataset.
 
 > Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 ---

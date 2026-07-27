@@ -1,6 +1,6 @@
 # AudioText-ContextDA with Real Sound Support
 
-This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository with real-world sound classification experiments.
+This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDA) repository with real-world sound classification experiments.
 
 > Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 ---
