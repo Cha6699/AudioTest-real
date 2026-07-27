@@ -1,9 +1,8 @@
 # AudioText-ContextDA with ESC-50 Support
 
-基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，添加了 ESC-50 数据集的支持。
+This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository with support for the ESC-50 dataset.
 
-> 原始项目：INTERSPEECH 2025 论文 "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification" 的官方代码。
-
+> Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 ---
 
 ## Setup
@@ -120,9 +119,9 @@ python predict_single_audio.py
 
 | Method | Type | Mean Accuracy | Std |
 |--------|------|---------------|-----|
-| Zero-shot | 零样本学习 | 81.25% | ±3.91% |
-| KNN | 监督学习 (余弦距离) | 87.90% | ±2.17% |
-| SVM | 监督学习 (RBF核) | **89.70%** | **±1.60%** |
+| Zero-shot | Zero-shot Learning| 81.25% | ±3.91% |
+| KNN | Supervised Learning (Cosine Distance) | 87.90% | ±2.17% |
+| SVM | Supervised Learning (RBF Kernel) | **89.70%** | **±1.60%** |
 
 ### Key Observations
 

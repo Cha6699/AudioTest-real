@@ -1,9 +1,8 @@
 # AudioText-ContextDA with Real Sound Support
 
-基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，使用真实录制声音进行音频分类实验。
+This project extends the [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) repository with real-world sound classification experiments.
 
-> 原始项目：INTERSPEECH 2025 论文 "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification" 的官方代码。
-
+> Original project: Official release of the INTERSPEECH 2025 paper "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification".
 ---
 
 ## Setup
@@ -51,11 +50,11 @@ wget -P models/LAION-CLAP https://huggingface.co/lukewys/laion_clap/resolve/main
 
 ### Real Sound Dataset
 
-本项目使用真实录制的声音数据集进行测试。
+This project uses a custom real-world sound dataset.
 
-- **样本数**: 28
-- **类别数**: 4
-- **格式**: WAV
+- **Samples**: 28
+- **Classes**: 4
+- **Format**: WAV
 
 ### Place data in the following structure
 
@@ -78,11 +77,11 @@ python test_zero_sample.py
 
 ### 2. Supervised learning with classifier comparison
 
-支持三种分类器对比：
+Supports three classifiers:
 
-- **SVM** (RBF核)
-- **MLP** (多层感知机)
-- **RandomForest** (随机森林)
+- **SVM** (RBFKernel)
+- **MLP** (Multi-layer Perceptron)
+- **RandomForest** (Random Forest)
 
 ```bash
 python test_supervised_learning.py
@@ -90,9 +89,9 @@ python test_supervised_learning.py
 
 ### 3. Text-based domain adaptation
 
-文本领域适配实验，背景类型设置为 **construction_site (工地)**，测试不同温度参数的影响：
+Domain adaptation experiment with construction site background across different temperature parameters:
 
-- 温度参数: 0.3, 0.5, 0.7
+- Temperature: 0.3, 0.5, 0.7
 
 ```bash
 python test_with_domain_adaptation_text.py
@@ -104,16 +103,16 @@ python test_with_domain_adaptation_text.py
 
 ### Zero-shot Results
 
-| 指标 | 值 |
+| Metric | Value |
 |------|-----|
-| 测试样本数 | 28 |
-| 类别数 | 4 |
+| Test Samples | 28 |
+| Number of Classes | 4 |
 | **mAP** | **0.8048** |
-| 单标签准确率 | 32.14% |
+| Single-label Accuracy | 32.14% |
 
 ### Supervised Learning Results (Classifier Comparison)
 
-| 分类器 | mAP | 准确率 |
+| Classifier | mAP | Accuracy |
 |--------|-----|--------|
 | SVM | 0.9086 | 53.57% |
 | RandomForest | 0.9407 | 89.29% |
@@ -123,16 +122,16 @@ python test_with_domain_adaptation_text.py
 
 | Method | Type | mAP | Accuracy |
 |--------|------|-----|----------|
-| Zero-shot | 零样本学习 | 0.8048 | 32.14% |
-| SVM | 监督学习 (RBF核) | 0.9086 | 53.57% |
-| RandomForest | 监督学习 (集成学习) | 0.9407 | 89.29% |
-| **MLP** | **监督学习 (神经网络)** | **0.9547** | **89.29%** |
+| Zero-shot | Zero-shot Learning | 0.8048 | 32.14% |
+| SVM | Supervised Learning (RBF Kernel) | 0.9086 | 53.57% |
+| RandomForest | Supervised Learning (Ensemble) | 0.9407 | 89.29% |
+| **MLP** | **Supervised Learning (Neural Network)** | **0.9547** | **89.29%** |
 
 ### Text-based Domain Adaptation Results
 
-背景类型: **construction_site (工地)**
+Background: **construction_site **
 
-| 温度参数 | mAP | 单标签准确率 |
+| Temperature | mAP | Single-label Accuracy |
 |----------|-----|--------------|
 | 0.3 | **0.8080** | 25.00% |
 | 0.5 | 0.8053 | 67.86% |
