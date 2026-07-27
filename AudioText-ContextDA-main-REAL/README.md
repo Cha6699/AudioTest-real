@@ -1,148 +1,177 @@
-# AUDIO-TEXT DOMAIN ADAPATATION FOR SOUND CLASSIFICATION
+# AudioText-ContextDA with Real Sound Support
 
-Official release of the INTERSPEECH 2025 paper: Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification 
+基于 [AudioText-ContextDomainAdaptation](https://github.com/eacevedo1/AudioText-ContextDomainAdaptation) 项目，使用真实录制声音进行音频分类实验。
 
-![Method Proposed](figures/figura_v1.001.png "Proposed Method")
+> 原始项目：INTERSPEECH 2025 论文 "Domain Adaptation and Modality Gap in Audio-Text Models for Sound Classification" 的官方代码。
+
+---
 
 ## Setup
 
 ### Clone repository
 
-```
+```bash
 git clone git@github.com:eacevedo1/AudioText-ContextDomainAdaptation.git
+cd AudioText-ContextDomainAdaptation
 ```
 
 ### Create environment
 
-```
+```bash
 conda create --name atm-domain-adapt python=3.9
 conda activate atm-domain-adapt
 pip install -r requirements.txt
 ```
 
-### Download the pretrained models
+### Extra dependencies (for HuggingFace version)
 
+```bash
+pip install transformers
 ```
-# Create the directory if it doesn't exist
-mkdir -p models/LAION-CLAP
 
-# Download the model into models/LAION-CLAP
+---
+
+## Download the pretrained models
+
+### Create the directory
+
+```bash
+mkdir -p models/LAION-CLAP
+```
+
+### Download the model
+
+```bash
 wget -P models/LAION-CLAP https://huggingface.co/lukewys/laion_clap/resolve/main/630k-audioset-fusion-best.pt
 ```
 
-## Download Datasets
+---
 
-To download datasets we run the `scripts/download_dataset.py` script. You can specify which dataset you want to download using the `--dataset_name argument`. For example, to download the `urbansound8k` dataset, you can use the following command:
+## Dataset Preparation
 
-```
-python3 scripts/download_dataset.py --dataset_name urbansound8k 
-```
+### Real Sound Dataset
 
-The dataset will be automatically downloaded into the `data/input/` directory within the project. The script will handle downloading, cleaning up, and overwriting any existing files if necessary.
+本项目使用真实录制的声音数据集进行测试。
 
-For more information on these datasets, refer to the [Soundata Documentation - Datasets](https://soundata.readthedocs.io/en/latest/source/quick_reference.html).
+- **样本数**: 28
+- **类别数**: 4
+- **格式**: WAV
 
-## Create Soundscapes
+### Place data in the following structure
 
-To create an augmented dataset by putting a foreground sound into a background soundscape, you should run the script `scripts/soundscape_augmentations.py`. An example command to execute the script is:
-
-```
-python3 scripts/soundscape_augmentations.py --folds 1,2,3 --parameters snr_dist=(const,6) n_soundscapes=2 bg=park
-```
-
-This codes generates a new dataset of `urbansound8k` with files in folds 1,2 and 3 using Scaper. In this case we generate 2 soundscapes for each foreground (`n_soundscapes=2`) with a setted background class `park`. If we want to use all backgrounds use parameters with `bg=all`. Also, is possible to overwrite some distribution of the generation, in this case we set SNR of the generated soundscape to 6dB (`snr_dist=(const,6)`).
-
-## Exctract Audio Embeddings 
-
-To extract embeddings from a dataset, use the `scripts/extract_embeddings.py` script. This script processes the audio data and saves the extracted embeddings to a file.
-
-Example command to extract embeddings from the urbansound8k dataset:
-
-```
-python3 scripts/extract_embeddings.py --dataset urbansound8k --path urbansound8k-20240705184401
+```text
+data/input/real_sound/
+├── audio/          # All .wav files
+└── meta/
+    └── labels.csv  # Metadata file
 ```
 
-**Parameters:**
-- `--dataset`: The name of the dataset from which you want to extract embeddings (e.g., urbansound8k, tau2019uas).
-- `--path`: The folder path of the augmented dataset or original dataset. If working with an augmented dataset, provide the folder path (e.g., urbansound8k-20240705184401); otherwise, set it to None.
-- `--num_workers`: (Optional) The number of workers to use for extracting embeddings (default: 1).
+---
 
-The embeddings will be saved as a `.pt` file in the `data/embeddings/` directory. The filename will follow the format `<dataset_name>_<timestamp>.pt`. 
+## Usage
 
-This script automatically detects the available hardware (GPU, MPS, or CPU) to optimize the embedding extraction process.
+### 1. Zero-shot classification
 
-## Sound Classification
-
-The script `scripts/sound_classification.py` is is used to classify sounds using `LAION-CLAP` pre-trained audio-text model. To run the script, use the following command:
-
-```
-python3 scripts/sound_classification.py --embeddings_path <embeddings_path> --dataset <dataset> --mode <mode>
+```bash
+python test_zero_sample.py
 ```
 
-**Parameters:**
+### 2. Supervised learning with classifier comparison
 
-- `--embeddings_path`: The path to the pre-computed embeddings file.
-- `--dataset`: The name of the dataset for classification (e.g., urbansound8k).
-- `--modality`: (Optional) The modality to be used for domain adaptation. Set to 'text' for text-guided prototypes, 'audio' for audio-based background profiles, or None if no domain adaptation is needed.
-- `--temperature`: (Optional) The temperature value for domain adaptation (default: 0.5).
-- `--bg_embeddings_path`: (Optional) The path to the background embeddings file (only needed for audio domain adaptation).
-- `--mode`: The training mode for classification. Choose from:
-    * `zs`: Zero-shot classification.
-    * `tgap`: Text-guided audio prototypes.
-    * `sv`: Supervised classification.
+支持三种分类器对比：
 
-The script will output accuracy metrics for each fold of the dataset and display the final classification score.
+- **SVM** (RBF核)
+- **MLP** (多层感知机)
+- **RandomForest** (随机森林)
 
-Example usage:
-
-```
-python3 scripts/sound_classification.py --embeddings_path embeddings/urbansound8k_1520.pt --dataset urbansound8k --mode zs
+```bash
+python test_supervised_learning.py
 ```
 
-This example runs zero-shot classification on the urbansound8k dataset using the pre-computed embeddings.
+### 3. Text-based domain adaptation
 
-## Inference Classification with Domain Adaptation
+文本领域适配实验，背景类型设置为 **construction_site (工地)**，测试不同温度参数的影响：
 
-This script performs sound classification inference on audio files using domain adaptation techniques. The script can apply domain adaptation with either text or audio modalities to enhance classification accuracy. To run inference classification with domain adaptation, use the following command:
+- 温度参数: 0.3, 0.5, 0.7
 
-```
-python3 scripts/inference_classification.py --class_labels <class_labels_path> --audio_folder_path <audio_folder_path> --modality <modality> --temperature <temperature>
-```
-
-**Parameters:**
-
-- `--class_labels`: Path to the file containing the class labels (required).
-- `--audio_folder_path`: Path to the folder containing the audio files to classify (required).
-- `--modality`: Modality to use for domain adaptation. Options are:
-    * `'text'` for text-based domain adaptation.
-    * `'audio'` for audio-based domain adaptation.
-None if no domain adaptation is needed.
-- `--temperature`: (Optional) The temperature value for domain adaptation, default is 0.5.
-- `--bg_type`: Specifies the type of background for text-based domain adaptation (e.g., park, airport, street traffic). Needed in case of using domain adpatation with modality `'text'`. 
-- `--bg_folder_path`: Path to the folder containing background audio files for audio-based domain adaptation. Needed in case of using domain adpatation with modality `'audio'`. 
-- `--num_workers`: (Optional) Number of workers to use for embedding extraction (default: 1).
-
-The script processes the audio files from the specified folder, computes embeddings, applies domain adaptation if specified, and saves the classification results along with confidence scores.
-
-1. Example Usage:
-
-```
-python3 scripts/inference_classification.py --class_labels class_labels.txt --audio_folder_path demo/inference_demo --modality text --temperature 0.5 --bg_type park
+```bash
+python test_with_domain_adaptation_text.py
 ```
 
-This example runs inference on audio files in the test_audios folder using text-based domain adaptation with a park background profile.
+---
 
-2. Example Usage:
+## Results
+
+### Zero-shot Results
+
+| 指标 | 值 |
+|------|-----|
+| 测试样本数 | 28 |
+| 类别数 | 4 |
+| **mAP** | **0.8048** |
+| 单标签准确率 | 32.14% |
+
+### Supervised Learning Results (Classifier Comparison)
+
+| 分类器 | mAP | 准确率 |
+|--------|-----|--------|
+| SVM | 0.9086 | 53.57% |
+| RandomForest | 0.9407 | 89.29% |
+| **MLP** | **0.9547** | **89.29%** |
+
+### Method Comparison
+
+| Method | Type | mAP | Accuracy |
+|--------|------|-----|----------|
+| Zero-shot | 零样本学习 | 0.8048 | 32.14% |
+| SVM | 监督学习 (RBF核) | 0.9086 | 53.57% |
+| RandomForest | 监督学习 (集成学习) | 0.9407 | 89.29% |
+| **MLP** | **监督学习 (神经网络)** | **0.9547** | **89.29%** |
+
+### Text-based Domain Adaptation Results
+
+背景类型: **construction_site (工地)**
+
+| 温度参数 | mAP | 单标签准确率 |
+|----------|-----|--------------|
+| 0.3 | **0.8080** | 25.00% |
+| 0.5 | 0.8053 | 67.86% |
+| 0.7 | 0.7852 | 28.57% |
+
+### Key Observations
+
+- **MLP** achieves the best performance with **95.47% mAP**
+- **RandomForest** shows strong performance with **94.07% mAP** and **89.29% accuracy**
+- **Zero-shot** reaches **80.48% mAP** without any training data
+- **Text-based domain adaptation** works best at temperature **0.3** (80.80% mAP)
+- Temperature increase from 0.3 to 0.7 causes mAP drop from 80.80% to 78.52%
+
+### Results Location
+
+All results are saved in the `result/` directory:
 
 ```
-python3 scripts/inference_classification.py --class_labels class_labels.txt --audio_folder_path demo/inference_demo --modality audio --temperature 0.5 --bg_folder_path demo/inference_bg_demo
+result/
+├── zero_sample/                         # Zero-shot results
+│   └── zero_sample.csv
+├── classifier_comparison/               # Supervised learning results
+│   ├── classifier_comparison.csv
+│   └── classifier_comparison.png
+└── test_with_domain_adaptation_text/    # Domain adaptation results
+    ├── temperature_0.3/
+    │   └── results.csv
+    ├── temperature_0.5/
+    │   └── results.csv
+    └── temperature_0.7/
+        └── results.csv
 ```
 
-This example runs inference on audio files in the test_audios folder using audio-based domain adaptation with a park background profile.
 
 ## Citation
 
 If you use this code or ideas from our work, please cite:
+
+> Acevedo, E., Rocamora, M., & Fuentes, M. (2025). Domain Adaptation Method and Modality Gap Impact in Audio-Text Models for Prototypical Sound Classification. In *Interspeech 2025*, pp. 1328-1332.
 
 ```bibtex
 @inproceedings{acevedo25_interspeech,
@@ -152,6 +181,11 @@ If you use this code or ideas from our work, please cite:
   booktitle = {{Interspeech 2025}},
   pages     = {1328--1332},
   doi       = {10.21437/Interspeech.2025-886},
-  issn      = {2958-1796},
 }
 ```
+
+---
+
+## License
+
+This project is distributed under the same license as the original repository.
