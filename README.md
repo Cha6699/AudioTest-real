@@ -111,7 +111,7 @@ AudioTest-real/
 
 ## Key Findings
 
-1. **Supervised learning achieves the best performance**:MLP reaches 95.47% mAP**,significantly outperforming Zero-shot (80.48%)
+1. **Supervised learning achieves the best performance**:MLP reaches 95.47% mAP,significantly outperforming Zero-shot (80.48%)
 2. **RandomForest performs strongly**:  94.07% mAP with 89.29% accuracy, comparable to MLP
 3. **Text-based domain adaptation**: Optimal performance at temperature 0.3 (80.80% mAP)
 4. **Temperature impact**: mAP drops from 80.80% to 78.52% as temperature increases from 0.3 to 0.7
