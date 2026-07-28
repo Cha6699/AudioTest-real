@@ -23,6 +23,7 @@ Both subprojects share the same environment:
 conda create --name atm-domain-adapt python=3.9
 conda activate atm-domain-adapt
 pip install -r requirements.txt
+```
 
 ### Extra dependencies (for HuggingFace version)
 
